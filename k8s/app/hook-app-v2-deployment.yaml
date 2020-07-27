@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zdt-app
+  namespace: zdt-test
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        k8s-app: zdt-app
+        version: v2.0.0
+    spec:
+      containers:
+        - name: zdt-app
+          image: zdt-app
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9015
+          env:
+            - name: APP_VERSION
+              value: "v2.0.0-preStop"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep","10"]
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9015
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 15
+            failureThreshold: 10
+            successThreshold: 1
+  selector:
+    matchLabels:
+      k8s-app: zdt-app

@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: zdt-service
+  namespace: zdt-test
+  labels:
+    k8s-svc: zdt-service
+spec:
+  type: NodePort
+  selector:
+    k8s-app: zdt-app
+  ports:
+    - port: 9015
+      targetPort: 9015
+      nodePort: 32015
+      name: http
